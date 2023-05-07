@@ -17,9 +17,6 @@ from constants import (
 pygame.init()
 screen = pygame.display.set_mode(SIZE)
 pygame.display.set_caption("BattleShip")
-icon = pygame.image.load("media/BattleShip.png")
-pygame.display.set_icon(icon)
-
 font = pygame.font.SysFont("notosans", FONT_SIZE)
 game_over_font = pygame.font.SysFont("notosans", GAME_OVER_FONT_SIZE)
 
