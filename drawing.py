@@ -21,7 +21,7 @@ font = pygame.font.SysFont("notosans", FONT_SIZE)
 game_over_font = pygame.font.SysFont("notosans", GAME_OVER_FONT_SIZE)
 
 
-def draw_ships(ships_coordinates_list: list, ships_color: tuple = BLACK) -> None:
+def draw_ships(ships_coordinates_list: list, ships_color: tuple) -> None:
     for elem in ships_coordinates_list:
         ship = sorted(elem)
         x_start = ship[0][0]
@@ -37,7 +37,7 @@ def draw_ships(ships_coordinates_list: list, ships_color: tuple = BLACK) -> None
         pygame.draw.rect(screen, ships_color, ((x, y), (ship_width, ship_height)), width=BLOCK_SIZE // 10)
 
 
-def draw_from_dotted_set(dotted_set_to_draw_from: set, dots_color: tuple = BLACK) -> None:
+def draw_from_dotted_set(dotted_set_to_draw_from: set, dots_color: tuple) -> None:
     for elem in dotted_set_to_draw_from:
         pygame.draw.circle(
             screen,
@@ -47,7 +47,7 @@ def draw_from_dotted_set(dotted_set_to_draw_from: set, dots_color: tuple = BLACK
         )
 
 
-def draw_hit_blocks(hit_blocks_to_draw_from: set, hit_blocks_color: tuple = BLACK) -> None:
+def draw_hit_blocks(hit_blocks_to_draw_from: set, hit_blocks_color: tuple) -> None:
 
     for block in hit_blocks_to_draw_from:
         x1 = BLOCK_SIZE * (block[0] - 1) + LEFT_MARGIN
@@ -59,9 +59,9 @@ def draw_hit_blocks(hit_blocks_to_draw_from: set, hit_blocks_color: tuple = BLAC
 def show_message_at_rect_center(
     message: str,
     rect: tuple,
+    background_color: tuple,
     font: pygame.font.Font = font,
     message_color: tuple = RED,
-    background_color: tuple = WHITE,
 ) -> None:
 
     message_width, message_height = font.size(message)
