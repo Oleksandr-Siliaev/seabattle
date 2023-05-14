@@ -197,15 +197,15 @@ def game(color_wind, color_text):
         """
          
     while ships_not_created:
-        screen.fill(color_wind, color_text, RECT_FOR_GRIDS)
+        screen.fill(color_wind, RECT_FOR_GRIDS)
         Grid(title="COMPUTER", offset=0, font=font, letters=LETTERS, line_color=color_text, text_color=color_text)  # type: ignore
         Grid(title="HUMAN", offset=15, font=font, letters=LETTERS, line_color=color_text, text_color=color_text)
         undo_button.draw(color_wind)
-        undo_button.print_message(color_text)
+        undo_button.print_message(color_wind)
         undo_button.change_color_on_hover()
         mouse = pygame.mouse.get_pos()
         if not human_ships_to_draw:
-            undo_button.draw(None,LIGHT_GRAY)
+            undo_button.draw(color_wind,LIGHT_GRAY)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -237,6 +237,7 @@ def game(color_wind, color_text):
                     y_start=y_start,
                     x_end=x_end,
                     y_end=y_end,
+                    background_color = color_wind,
                 )
             if len(human_ships_to_draw) == 10:
                 ships_not_created = False
@@ -338,7 +339,7 @@ def game(color_wind, color_text):
                 destroyed_computer_ships.clear()
                 dotted_set.clear()
                 hit_blocks.clear()
-                game()
+                game(color_wind, color_text)
             elif event.type == pygame.MOUSEBUTTONDOWN and quit_game_button.rect.collidepoint(mouse):
                 pygame.quit()
                 sys.exit()
