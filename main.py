@@ -246,6 +246,7 @@ def game(color_wind, color_text):
         pygame.draw.rect(screen, color_text, (start, ship_size), 3)
         draw_ships(human_ships_to_draw,color_text)
         pygame.display.update()
+    fired_blocks = set()
 
     while not game_over:
         screen.fill(color_wind, RECT_FOR_HUMAN_SHIPS_COUNT)
@@ -262,22 +263,27 @@ def game(color_wind, color_text):
                     UPPER_MARGIN < y < UPPER_MARGIN + 10 * BLOCK_SIZE
                 ):
                     fired_block = ((x - LEFT_MARGIN) // BLOCK_SIZE + 1, (y - UPPER_MARGIN) // BLOCK_SIZE + 1)
-                    computer_turn = not check_hit_or_miss(
-                        fired_block=fired_block,
-                        opponents_ships_list=computer_ships_working,
-                        computer_turn=False,
-                        opponents_ships_list_original_copy=computer.ships,
-                        opponents_ships_set=computer.ships_set,
-                        computer=computer,
-                    )
+                    if fired_block not in fired_blocks:
+                        fired_blocks.add(fired_block)
+                        computer_turn = not check_hit_or_miss(
+                            fired_block=fired_block,
+                            opponents_ships_list=computer_ships_working,
+                            computer_turn=False,
+                            opponents_ships_list_original_copy=computer.ships,
+                            opponents_ships_set=computer.ships_set,
+                            computer=computer,
+                        )
+                        draw_from_dotted_set(dotted_set, color_text)
+                        draw_hit_blocks(hit_blocks, color_text)
+                        screen.fill(color_wind, MESSAGE_RECT_COMPUTER)
+                        show_message_at_rect_center(
+                            f"Your last shot: {LETTERS[fired_block[0] - 1] + str(fired_block[1])}",
+                            MESSAGE_RECT_COMPUTER, color_wind,
+                        )
+                    else:
+                        screen.fill(color_wind, MESSAGE_RECT_COMPUTER)
+                        show_message_at_rect_center("You already shoot in this block! Try again", MESSAGE_RECT_COMPUTER,color_wind)
 
-                    draw_from_dotted_set(dotted_set,color_text)
-                    draw_hit_blocks(hit_blocks, color_text)
-                    screen.fill(color_wind, MESSAGE_RECT_COMPUTER)
-                    show_message_at_rect_center(
-                        f"Your last shot: {LETTERS[fired_block[0]-1] + str(fired_block[1])}",
-                        MESSAGE_RECT_COMPUTER,color_wind,
-                    )
                 else:
                     show_message_at_rect_center("Your shot is outside of grid! Try again", MESSAGE_RECT_COMPUTER, color_wind)
         if computer_turn:
