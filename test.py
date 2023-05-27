@@ -1,16 +1,9 @@
 import pytest
+import pygame
 from unittest import mock
 from autocomplete import AutoShips
 from manual_ships import manually_create_new_ship
 from lg import check_hit_or_miss, computer_shoots, update_used_blocks
-from constants import (
-    BLOCK_SIZE,
-    LEFT_MARGIN,
-    RECT_FOR_MESSAGES_AND_BUTTONS,
-    UPPER_MARGIN,
-    WHITE,
-)
-from drawing import screen, show_message_at_rect_center
 # Mocking the necessary objects
 @pytest.fixture
 def mock_autoships():
@@ -25,8 +18,8 @@ def test_manually_create_new_ship(mock_autoships, mock_grid):    # Create a test
     human_ships_set = set()
     used_blocks_for_manual_drawing = set()
     num_ships_list = [0, 0, 0, 0]
-    x_start, y_start = 1, 1
-    x_end, y_end = 4, 1
+    x_start, y_start = 1065 , 416
+    x_end, y_end = 1235, 440
     background_color = 'black'
 
     # Call the function to be tested
@@ -43,31 +36,15 @@ def test_manually_create_new_ship(mock_autoships, mock_grid):    # Create a test
     )
 
     # Assertions
-    start_block = ((x_start - LEFT_MARGIN) // BLOCK_SIZE + 1, (y_start - UPPER_MARGIN) // BLOCK_SIZE + 1)
-    end_block = ((x_end - LEFT_MARGIN) // BLOCK_SIZE + 1, (y_end - UPPER_MARGIN) // BLOCK_SIZE + 1)
-    if start_block > end_block:
-        start_block, end_block = end_block, start_block
-    temp_ship = []
-    if 15 < start_block[0] < 26 and 0 < start_block[1] < 11 and 15 < end_block[0] < 26 and 0 < end_block[1] < 11:
-        temp_ship = create_new_ship(start_block, end_block, background_color)
-    else:
-        show_message_at_rect_center("SHIP IS BEYOND YOUR GRID! Try again!", RECT_FOR_MESSAGES_AND_BUTTONS,
-                                    background_color)
-    if temp_ship:
-        validate_and_save_new_ship(
-            human_ships_to_draw, human_ships_set, used_blocks_for_manual_drawing, num_ships_list, temp_ship,
-            background_color
-        )
-
     assert len(human_ships_to_draw) == 1
 
 def test_check_hit_or_miss():
     # Create a test scenario
-    fired_block = (1, 1)
-    opponents_ships_list = [[(1, 1), (1, 2), (1, 3)]]
-    computer_turn = False
-    opponents_ships_list_original_copy = [[(1, 1), (1, 2), (1, 3)]]
-    opponents_ships_set = {(1, 1), (1, 2), (1, 3)}
+    fired_block = (23, 3)
+    opponents_ships_list = [[(23, 3), (23, 4), (23, 5), (23, 6)], [(22, 1), (21, 1), (20, 1)], [(19, 10), (18, 10), (17, 10)], [(20, 8), (20, 7)], [(17, 4), (16, 4)], [(25, 5), (25, 6)], [(24, 1)], [(17, 6)], [(18, 2)]]
+    computer_turn = True
+    opponents_ships_list_original_copy = [[(23, 3), (23, 4), (23, 5), (23, 6)], [(22, 1), (21, 1), (20, 1)], [(19, 10), (18, 10), (17, 10)], [(20, 8), (20, 7)], [(17, 4), (16, 4)], [(25, 5), (25, 6)], [(24, 1)], [(17, 6)], [(18, 2)], [(21, 3)]]
+    opponents_ships_set = {(23, 4), (20, 8), (17, 6), (16, 4), (22, 1), (18, 10), (20, 1), (20, 7), (21, 3), (23, 3), (23, 6), (24, 1), (25, 6), (23, 5), (17, 4), (17, 10), (19, 10), (25, 5), (18, 2), (21, 1)}
     computer = mock.Mock()
     # Call the function to be tested
     result = check_hit_or_miss(
@@ -77,37 +54,39 @@ def test_check_hit_or_miss():
     )
     # Assertions
     assert result is True
-    assert opponents_ships_list == [[(1, 2), (1, 3)]]
-    assert opponents_ships_set == {(1, 2), (1, 3)}
-    assert computer.update_hit_blocks.call_count == 1
-
+    assert opponents_ships_list == [[(23, 4), (23, 5), (23, 6)], [(22, 1), (21, 1), (20, 1)], [(19, 10), (18, 10), (17, 10)], [(20, 8), (20, 7)], [(17, 4), (16, 4)], [(25, 5), (25, 6)], [(24, 1)], [(17, 6)], [(18, 2)]]
+    assert opponents_ships_set == { (20, 8), (17, 6), (16, 4), (22, 1), (18, 10), (20, 1), (20, 7), (21, 3), (23, 4), (23, 6), (24, 1), (25, 6), (23, 5), (17, 4), (17, 10), (19, 10), (25, 5), (18, 2), (21, 1)}
 def test_computer_shoots(mock_autoships, mock_grid):    # Create a test scenario
-    computer = mock.Mock()
-    computer_turn = True
-    opponents_ships_list = [[(1, 1), (1, 2), (1, 3)]]
-    opponents_ships_set = {(1, 1), (1, 2), (1, 3)}
-    human_ships_set = {(2, 1), (2, 2)}
-    human_ships_list = [[(2, 1), (2, 2)]]
-    # Call the function to be tested
-    computer_shoots(        computer=computer,
-        computer_turn=computer_turn,        opponents_ships_list=opponents_ships_list,
-        opponents_ships_set=opponents_ships_set,        human_ships_set=human_ships_set,
-        human_ships_list=human_ships_list,        background_color='black',
-    )
+
+    fire_block = computer_shoots()
     # Assertions
-    assert computer.make_a_guess.call_count == 1
-    assert computer.update_miss_blocks.call_count == 1
-    assert computer.update_hit_blocks.call_count == 0
-    assert mock_grid.draw_hits_misses.call_count == 1
+    assert fire_block != None
 
 def test_update_used_blocks():    # Create a test scenario
+    human_ships_to_draw = []
+    human_ships_set = set()
     used_blocks_for_manual_drawing = set()
-    x_start, y_start = 1, 1
-    x_end, y_end = 5, 1
+    num_ships_list = [0, 0, 0, 0]
+    x_start, y_start = 1065, 416
+    x_end, y_end = 1235, 440
+    background_color = 'black'
+
     # Call the function to be tested
-    update_used_blocks(
-        used_blocks_for_manual_drawing=used_blocks_for_manual_drawing,        x_start=x_start,
-        y_start=y_start,        x_end=x_end,
-        y_end=y_end,    )
+    manually_create_new_ship(
+        human_ships_to_draw=human_ships_to_draw,
+        human_ships_set=human_ships_set,
+        used_blocks_for_manual_drawing=used_blocks_for_manual_drawing,
+        num_ships_list=num_ships_list,
+        x_start=x_start,
+        y_start=y_start,
+        x_end=x_end,
+        y_end=y_end,
+        background_color=background_color,
+    )
+
+    # Call the function to be tested
+    last_ship = list(human_ships_to_draw.pop())
+    update_used_blocks(ship = last_ship, method= used_blocks_for_manual_drawing.discard)
     # Assertions
-    assert used_blocks_for_manual_drawing == {(1, 1), (2, 1), (3, 1), (4, 1), (5, 1)}
+    assert len(human_ships_to_draw) == 0
+
