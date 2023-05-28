@@ -63,6 +63,7 @@ from manual_ships import manually_create_new_ship
 pygame.init()
 background_music = pygame.mixer.Sound("background_music.mp3")
 
+
 def main():
     background_music.set_volume(0.5)
     background_music.play(-1)
@@ -70,11 +71,12 @@ def main():
     color_text = BLACK
     game(color_wind, color_text)
 
+    
 def game(color_wind, color_text):
     background_music_value = background_music.get_volume()
     ships_creation_not_decided = True
     ships_not_created = True
-    setting_wind_draw =True
+    setting_wind_draw = True
     drawing = False
     game_over = False
     computer_turn = False
@@ -87,7 +89,8 @@ def game(color_wind, color_text):
     human_ships_set = set()
     used_blocks_for_manual_drawing = set()
     num_ships_list = [0, 0, 0, 0]
-    volume_slider = Slider(x_offset=100, y_offset=250, width=200, height=20, color=LIGHT_GRAY, handle_color=color_text, value = background_music_value)
+    volume_slider = Slider(x_offset=100, y_offset=250, width=200, height=20,
+                           color=LIGHT_GRAY, handle_color=color_text, value = background_music_value)
     auto_button = Button(AUTO_BUTTON_PLACE, "AUTO", HOW_TO_CREATE_SHIPS_MESSAGE, font, color_text)
     manual_button = Button(MANUAL_BUTTON_PLACE, "MANUAL", HOW_TO_CREATE_SHIPS_MESSAGE, font, color_text)
     aplly_button = Button(AUTO_BUTTON_PLACE, "APLLY", "", font, color_text)
