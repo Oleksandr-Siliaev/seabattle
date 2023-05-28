@@ -3,7 +3,8 @@ from typing import Callable
 
 from autocomplete import AutoShips
 
-computer_available_to_fire_set = {(x, y) for x in range(16, 26) for y in range(1, 11)}
+computer_available_to_fire_set = {(x, y)
+                                  for x in range(16, 26) for y in range(1, 11)}
 around_last_computer_hit_set = set()
 
 dotted_set_for_computer_not_to_shoot = set()
@@ -21,7 +22,8 @@ computer_destroyed_ships_count = {4: 0, 3: 0, 2: 0, 1: 0, "#": 0}
 def computer_shoots() -> tuple:
     global computer_available_to_fire_set
     if not computer_available_to_fire_set:
-        computer_available_to_fire_set = {(x, y) for x in range(16, 26) for y in range(1, 11)}
+        computer_available_to_fire_set = {
+            (x, y) for x in range(16, 26) for y in range(1, 11)}
 
     set_to_shoot_from = computer_available_to_fire_set
     if around_last_computer_hit_set:
@@ -60,10 +62,11 @@ def check_hit_or_miss(
                     computer_hits=True,
                 )
             if not elem:
+                opponent_list = opponents_ships_list_original_copy
                 update_destroyed_ships(
                     ind=ind,
                     computer_turn=computer_turn,
-                    opponents_ships_list_original_copy=opponents_ships_list_original_copy,
+                    opponents_ships_list_original_copy=opponent_list,
                 )
                 if computer_turn:
                     last_hits_list.clear()
@@ -169,7 +172,8 @@ def update_dotted_and_hit_sets(
     hit_blocks.add(fired_block)
     for i in range(-1, 2):
         for j in range(-1, 2):
-            if (not diagonal_only or i != 0 and j != 0) and a < x + i < b and 0 < y + j < 11:
+            if (not diagonal_only or i != 0 and j !=
+                    0) and a < x + i < b and 0 < y + j < 11:
                 add_missed_block_to_dotted_set(fired_block=(x + i, y + j))
     dotted_set -= hit_blocks
 

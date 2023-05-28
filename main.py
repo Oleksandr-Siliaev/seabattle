@@ -8,7 +8,7 @@ from constants import (
     AUTO_BUTTON_PLACE,
     BLACK,
     BLOCK_SIZE,
-    HOW_TO_CREATE_SHIPS_MESSAGE,
+    HTCSM,
     LEFT_MARGIN,
     LETTERS,
     LIGHT_GRAY,
@@ -64,6 +64,17 @@ pygame.init()
 background_music = pygame.mixer.Sound("background_music.mp3")
 
 
+def last_mess_fun(comp: bool, fired_block: tuple):
+    if comp is not True:
+        first = LETTERS[fired_block[0] - 1]
+        second = str(fired_block[1])
+        return f"Your last shot: {first + second}"
+    else:
+        first = LETTERS[fired_block[0] - 16]
+        second = str(fired_block[1])
+        return f"Computer's last shot: {first + second}"
+
+
 def main():
     background_music.set_volume(0.5)
     background_music.play(-1)
@@ -87,21 +98,21 @@ def game(color_wind, color_text):
 
     human_ships_to_draw = []
     human_ships_set = set()
-    used_blocks_for_manual_drawing = set()
+    u_b_f_m_d = set()
     num_ships_list = [0, 0, 0, 0]
     volume_slider = Slider(x_offset=100, y_offset=250, width=200, height=20,
                            color=LIGHT_GRAY, handle_color=color_text,
                            value=background_music_value)
     auto_button = Button(AUTO_BUTTON_PLACE, "AUTO",
-                         HOW_TO_CREATE_SHIPS_MESSAGE,
+                         HTCSM,
                          font, color_text)
     manual_button = Button(MANUAL_BUTTON_PLACE, "MANUAL",
-                           HOW_TO_CREATE_SHIPS_MESSAGE,
+                           HTCSM,
                            font, color_text)
     aplly_button = Button(AUTO_BUTTON_PLACE, "APLLY", "", font, color_text)
     back_button = Button(MANUAL_BUTTON_PLACE, "BACK", "", font, color_text)
     settings_button = Button(SETTINGS_BUTTON_PLACE, "SETTINGS",
-                             HOW_TO_CREATE_SHIPS_MESSAGE,
+                             HTCSM,
                              font, color_text)
     undo_button = Button(UNDO_BUTTON_PLACE, "UNDO LAST SHIP",
                          "", font, color_text)
@@ -245,9 +256,9 @@ def game(color_wind, color_text):
                     screen.fill(color_wind, RECT_FOR_MESSAGES_AND_BUTTONS)
                     deleted_ship = human_ships_to_draw.pop()
                     num_ships_list[len(deleted_ship) - 1] -= 1
-                    update_used_blocks(ship=deleted_ship,
-                                       method=
-                                       used_blocks_for_manual_drawing.discard)
+                    update_used_blocks(
+                        ship=deleted_ship,
+                        method=u_b_f_m_d.discard)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 drawing = True
                 x_start, y_start = event.pos
@@ -263,8 +274,7 @@ def game(color_wind, color_text):
                 manually_create_new_ship(
                     human_ships_to_draw=human_ships_to_draw,
                     human_ships_set=human_ships_set,
-                    used_blocks_for_manual_drawing=
-                    used_blocks_for_manual_drawing,
+                    used_blocks_for_manual_drawing=u_b_f_m_d,
                     num_ships_list=num_ships_list,
                     x_start=x_start,
                     y_start=y_start,
@@ -311,18 +321,24 @@ def game(color_wind, color_text):
                         draw_from_dotted_set(dotted_set, color_text)
                         draw_hit_blocks(hit_blocks, color_text)
                         screen.fill(color_wind, MESSAGE_RECT_COMPUTER)
+                        mess_last = last_mess_fun(False, fired_block)
                         show_message_at_rect_center(
-                            f"Your last shot: {LETTERS[fired_block[0] - 16] + str(fired_block[1])}",
-                            MESSAGE_RECT_COMPUTER, color_wind,
+                            mess_last,
+                            MESSAGE_RECT_COMPUTER,
+                            color_wind,
                         )
                     else:
                         screen.fill(color_wind, MESSAGE_RECT_COMPUTER)
-                        show_message_at_rect_center("You already shoot in this block! Try again",
-                                                    MESSAGE_RECT_COMPUTER,color_wind)
+                        show_message_at_rect_center(
+                            "You already shoot in this block! Try again",
+                            MESSAGE_RECT_COMPUTER,
+                            color_wind)
 
                 else:
-                    show_message_at_rect_center("Your shot is outside of grid! Try again",
-                                                MESSAGE_RECT_COMPUTER, color_wind)
+                    show_message_at_rect_center(
+                        "Your shot is outside of grid! Try again",
+                        MESSAGE_RECT_COMPUTER,
+                        color_wind)
         if computer_turn:
             fired_block = computer_shoots()
             computer_turn = check_hit_or_miss(
@@ -334,33 +350,42 @@ def game(color_wind, color_text):
                 computer=computer,
             )
 
-            draw_from_dotted_set(dotted_set,color_text)
-            draw_hit_blocks(hit_blocks,color_text)
+            draw_from_dotted_set(dotted_set, color_text)
+            draw_hit_blocks(hit_blocks, color_text)
             screen.fill(color_wind, MESSAGE_RECT_HUMAN)
+            mess_last = last_mess_fun(True, fired_block)
             show_message_at_rect_center(
-                f"Computer's last shot: {LETTERS[fired_block[0] - 16] + str(fired_block[1])}",
-                MESSAGE_RECT_HUMAN, color_wind
-            )
-        draw_ships(destroyed_computer_ships,color_text)
-        draw_ships(human_ships_to_draw,color_text)
+                mess_last,
+                MESSAGE_RECT_HUMAN,
+                color_wind)
+        draw_ships(destroyed_computer_ships, color_text)
+        draw_ships(human_ships_to_draw, color_text)
 
         if not computer.ships_set:
-            show_message_at_rect_center("YOU WIN!", (0, 0, SIZE[0], SIZE[1]),color_wind, game_over_font)
+            show_message_at_rect_center(
+                "YOU WIN!", (0, 0, SIZE[0], SIZE[1]),
+                color_wind, game_over_font)
             game_over = True
         if not human_ships_set:
-            show_message_at_rect_center("YOU LOSE!", (0, 0, SIZE[0], SIZE[1]),color_wind, game_over_font)
+            show_message_at_rect_center(
+                "YOU LOSE!", (0, 0, SIZE[0], SIZE[1]),
+                color_wind, game_over_font)
             game_over = True
 
         print_destroyed_ships_count(
-            X_OFFSET_FOR_HUMAN_SHIPS_COUNT, Y_OFFSET_FOR_SHIPS_COUNT, human_destroyed_ships_count, font
-        )
+            X_OFFSET_FOR_HUMAN_SHIPS_COUNT,
+            Y_OFFSET_FOR_SHIPS_COUNT,
+            human_destroyed_ships_count,
+            font)
         print_destroyed_ships_count(
-            X_OFFSET_FOR_COMPUTER_SHIPS_COUNT, Y_OFFSET_FOR_SHIPS_COUNT, computer_destroyed_ships_count, font
-        )
+            X_OFFSET_FOR_COMPUTER_SHIPS_COUNT,
+            Y_OFFSET_FOR_SHIPS_COUNT,
+            computer_destroyed_ships_count,
+            font)
         pygame.display.update()
 
     while game_over:
-        screen.fill(color_wind,RECT_FOR_MESSAGES_AND_BUTTONS)
+        screen.fill(color_wind, RECT_FOR_MESSAGES_AND_BUTTONS)
         play_again_button.draw(color_wind)
         play_again_button.print_message(color_text)
         play_again_button.change_color_on_hover()
@@ -372,7 +397,8 @@ def game(color_wind, color_text):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN and play_again_button.rect.collidepoint(mouse):
+            elif ((event.type == pygame.MOUSEBUTTONDOWN) and
+                  (play_again_button.rect.collidepoint(mouse))):
                 around_last_computer_hit_set.clear()
                 dotted_set_for_computer_not_to_shoot.clear()
                 hit_blocks_for_computer_not_to_shoot.clear()
@@ -383,7 +409,8 @@ def game(color_wind, color_text):
                 dotted_set.clear()
                 hit_blocks.clear()
                 game(color_wind, color_text)
-            elif event.type == pygame.MOUSEBUTTONDOWN and quit_game_button.rect.collidepoint(mouse):
+            elif ((event.type == pygame.MOUSEBUTTONDOWN) and
+                  (quit_game_button.rect.collidepoint(mouse))):
                 pygame.quit()
                 sys.exit()
         pygame.display.update()

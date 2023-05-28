@@ -3,7 +3,6 @@
 import pygame
 
 from constants import (
-    BLACK,
     BLOCK_SIZE,
     FONT_SIZE,
     GAME_OVER_FONT_SIZE,
@@ -11,7 +10,6 @@ from constants import (
     RED,
     SIZE,
     UPPER_MARGIN,
-    WHITE,
 )
 
 pygame.init()
@@ -34,26 +32,33 @@ def draw_ships(ships_coordinates_list: list, ships_color: tuple) -> None:
             ship_width, ship_height = ship_height, ship_width
         x = BLOCK_SIZE * (x_start - 1) + LEFT_MARGIN
         y = BLOCK_SIZE * (y_start - 1) + UPPER_MARGIN
-        pygame.draw.rect(screen, ships_color, ((x, y), (ship_width, ship_height)), width=BLOCK_SIZE // 10)
+        pygame.draw.rect(screen, ships_color, ((
+            x, y), (ship_width, ship_height)), width=BLOCK_SIZE // 10)
 
 
-def draw_from_dotted_set(dotted_set_to_draw_from: set, dots_color: tuple) -> None:
+def draw_from_dotted_set(
+        dotted_set_to_draw_from: set,
+        dots_color: tuple) -> None:
     for elem in dotted_set_to_draw_from:
-        pygame.draw.circle(
-            screen,
-            dots_color,
-            (BLOCK_SIZE * (elem[0] - 0.5) + LEFT_MARGIN, BLOCK_SIZE * (elem[1] - 0.5) + UPPER_MARGIN),
-            BLOCK_SIZE // 6,
-        )
+        pygame.draw.circle(screen,
+                           dots_color,
+                           (BLOCK_SIZE * (elem[0] - 0.5) + LEFT_MARGIN,
+                            BLOCK_SIZE * (elem[1] - 0.5) + UPPER_MARGIN),
+                           BLOCK_SIZE // 6,
+                           )
 
 
-def draw_hit_blocks(hit_blocks_to_draw_from: set, hit_blocks_color: tuple) -> None:
+def draw_hit_blocks(
+        hit_blocks_to_draw_from: set,
+        hit_blocks_color: tuple) -> None:
 
     for block in hit_blocks_to_draw_from:
         x1 = BLOCK_SIZE * (block[0] - 1) + LEFT_MARGIN
         y1 = BLOCK_SIZE * (block[1] - 1) + UPPER_MARGIN
-        pygame.draw.line(screen, hit_blocks_color, (x1, y1), (x1 + BLOCK_SIZE, y1 + BLOCK_SIZE), BLOCK_SIZE // 6)
-        pygame.draw.line(screen, hit_blocks_color, (x1, y1 + BLOCK_SIZE), (x1 + BLOCK_SIZE, y1), BLOCK_SIZE // 6)
+        pygame.draw.line(screen, hit_blocks_color, (x1, y1),
+                         (x1 + BLOCK_SIZE, y1 + BLOCK_SIZE), BLOCK_SIZE // 6)
+        pygame.draw.line(screen, hit_blocks_color, (x1, y1 +
+                         BLOCK_SIZE), (x1 + BLOCK_SIZE, y1), BLOCK_SIZE // 6)
 
 
 def show_message_at_rect_center(
@@ -68,15 +73,22 @@ def show_message_at_rect_center(
     message_rect = pygame.Rect(rect)
     x_start = message_rect.centerx - message_width / 2
     y_start = message_rect.centery - message_height / 2
-    background_rect = pygame.Rect(x_start - BLOCK_SIZE / 2, y_start, message_width + BLOCK_SIZE, message_height)
+    background_rect = pygame.Rect(
+        x_start - BLOCK_SIZE / 2,
+        y_start,
+        message_width + BLOCK_SIZE,
+        message_height)
     message_to_blit = font.render(message, True, message_color)
     screen.fill(background_color, background_rect)
     screen.blit(message_to_blit, (x_start, y_start))
 
 
 def print_destroyed_ships_count(
-    x_offset: int, y_offset: int, count_dict: dict, font: pygame.font.Font, color: tuple = RED
-) -> None:
+        x_offset: int,
+        y_offset: int,
+        count_dict: dict,
+        font: pygame.font.Font,
+        color: tuple = RED) -> None:
     for ship, count in count_dict.items():
         title = font.render("Ships", True, color)
         text = font.render(f"{ship}: {count}", True, color)

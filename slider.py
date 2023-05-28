@@ -1,12 +1,17 @@
-from typing import Optional
-
 import pygame
-
-from constants import BLACK, BLOCK_SIZE, GREEN_BLUE, UPPER_MARGIN, WHITE
 from drawing import screen
 
+
 class Slider:
-    def __init__(self, x_offset: int, y_offset: int, width: int, height: int, color: tuple, handle_color: tuple, value: float) -> None:
+    def __init__(
+            self,
+            x_offset: int,
+            y_offset: int,
+            width: int,
+            height: int,
+            color: tuple,
+            handle_color: tuple,
+            value: float) -> None:
         self.x_offset = x_offset
         self.y_offset = y_offset
         self.width = width
@@ -15,13 +20,19 @@ class Slider:
         self.handle_color = handle_color
         self.value = value  # Значение громкости (от 0 до 1)
         self.dragging = False
-        self.rect = pygame.Rect(self.x_offset, self.y_offset, self.width, self.height)
+        self.rect = pygame.Rect(
+            self.x_offset,
+            self.y_offset,
+            self.width,
+            self.height)
         self.font = pygame.font.Font(None, 20)
         # Ползунок
         self.handle_width = 10  # Ширина ползунка
-        self.handle_height = self.height + 4  # Высота ползунка (увеличена для визуального эффекта)
+        # Высота ползунка (увеличена для визуального эффекта)
+        self.handle_height = self.height + 4
         self.handle_rect = pygame.Rect(
-            self.x_offset + int(self.value * self.width) - self.handle_width // 2,
+            self.x_offset + int(self.value * self.width)
+            - self.handle_width // 2,
             self.y_offset - 2,
             self.handle_width,
             self.handle_height,
@@ -36,16 +47,24 @@ class Slider:
 
         volume_text = f"Volume: {int(self.value * 100)}%"
         text_surface = self.font.render(volume_text, True, self.handle_color)
-        text_rect = text_surface.get_rect(center=(self.x_offset + self.width // 2, self.y_offset - 30))
+        text_rect = text_surface.get_rect(
+            center=(
+                self.x_offset +
+                self.width //
+                2,
+                self.y_offset -
+                30))
         screen.blit(text_surface, text_rect)
 
     def update_value(self, mouse_x):
         # Обновление значения ползунка на основе позиции мыши
         relative_x = mouse_x - self.x_offset
-        self.value = max(0, min(1, relative_x / self.width))  # Значение ограничено от 0 до 1
+        self.value = max(0, min(1, relative_x / self.width)
+                         )  # Значение ограничено от 0 до 1
 
         # Обновление положения ползунка
-        self.handle_rect.x = self.x_offset + int(self.value * self.width) - self.handle_width // 2
+        self.handle_rect.x = self.x_offset + \
+            int(self.value * self.width) - self.handle_width // 2
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -61,6 +80,8 @@ class Slider:
         mouse_x = max(self.x_offset, min(mouse_x, self.x_offset + self.width))
         # Обновляем значение ползунка на основе позиции мыши
         relative_x = mouse_x - self.x_offset
-        self.value = max(0, min(1, relative_x / self.width))  # Значение ограничено от 0 до 1
+        self.value = max(0, min(1, relative_x / self.width)
+                         )  # Значение ограничено от 0 до 1
         # Обновляем положение ползунка
-        self.handle_rect.x = self.x_offset + int(self.value * self.width) - self.handle_width // 2
+        self.handle_rect.x = self.x_offset + \
+            int(self.value * self.width) - self.handle_width // 2
