@@ -16,10 +16,11 @@ jobs:
     - name: Install dependencies      
       run: pip install -r requirements.txt
            pip install pytest-html
+           pip install flake8-html
     - name: Run tests
       run: pytest --html=report.html
     - name: Run linting      
-      run: flake8 --format=html --htmldir=lint-report
+      run: flake8 --format=html --output-file=lint-report/index.html
     - name: Upload test report
       uses: actions/upload-artifact@v2      
       with:
