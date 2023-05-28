@@ -20,7 +20,7 @@ jobs:
     - name: Run tests
       run: pytest --html=report.html
     - name: Run linting      
-      run: flake8 --format=html --output-file=lint-report/index.html
+      run: flake8 --format=html --htmldir=lint-report
     - name: Upload test report
       uses: actions/upload-artifact@v2      
       with:
