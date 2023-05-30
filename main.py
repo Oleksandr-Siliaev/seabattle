@@ -103,17 +103,13 @@ def game(color_wind, color_text):
     volume_slider = Slider(x_offset=100, y_offset=250, width=200, height=20,
                            color=LIGHT_GRAY, handle_color=color_text,
                            value=background_music_value)
-    auto_button = Button(AUTO_BUTTON_PLACE, "AUTO",
-                         HTCSM,
-                         font, color_text)
+    auto_button = Button(AUTO_BUTTON_PLACE, "AUTO", HTCSM, font, color_text)
     manual_button = Button(MANUAL_BUTTON_PLACE, "MANUAL",
-                           HTCSM,
-                           font, color_text)
+                           HTCSM, font, color_text)
     aplly_button = Button(AUTO_BUTTON_PLACE, "APLLY", "", font, color_text)
     back_button = Button(MANUAL_BUTTON_PLACE, "BACK", "", font, color_text)
     settings_button = Button(SETTINGS_BUTTON_PLACE, "SETTINGS",
-                             HTCSM,
-                             font, color_text)
+                             HTCSM, font, color_text)
     undo_button = Button(UNDO_BUTTON_PLACE, "UNDO LAST SHIP",
                          "", font, color_text)
     play_again_button = Button(PLAY_AGAIN_BUTTON_PLACE, "PLAY AGAIN",
